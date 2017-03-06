@@ -1,0 +1,110 @@
+<!-- 报告模板 -->
+<!-- @author: zhengxiaoyao0716 -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="Keywords" content="" />
+    <meta name="Description" content="" />
+    <link rel="shortcut icon" href="http://os.zheng0716.com/static/image/favicon.ico" />
+    <title>报告模板</title>
+    <style>
+        @media print {
+            body>.page { page-break-after: always; }
+            .noprint { display: none; }
+        }
+    </style>
+    <style>
+        #cover { text-align: center; }
+        #cover input {
+            text-align: center;
+            border: none;
+        }
+        #cover>h1>input, #cover>h2>input {
+            font-family: "黑体";
+            width: 100%;
+        }
+        #cover>h1>input {
+            font-weight: bold;
+            font-size: 32px;
+        }
+        #cover>h2>input { font-size: 24px; }
+        #cover>p, #cover>p>input {
+            font-size: 24px;
+            font-family: "宋体";
+        }
+        #cover>p>span {
+            display: inline-block;
+            width: 10ch;
+            text-align: right;
+        }
+        #cover>p>input {
+            width: 24ch;
+            text-align: center;
+            /*text-decoration: underline;*/
+            border-bottom: 1px solid #000;
+        }
+        #cover>hr {
+            margin: 60px;
+            border: none;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+    <style>
+        #content { text-align: center; }
+        #content input {
+            text-align: center;
+            border: none;
+            width: 100%;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <a class="noprint" style="float: right;" href="javascript:print();">打印</a>
+    <div id="cover" class="page">
+        <h1><input value="" placeholder="标题"></h1>
+        <h2><input value="" placeholder="——副标题"></h2>
+        <br>
+        <p><span>班级：</span><input type="text" value="计算机1403班"></p>
+        <p><span>姓名：</span><input type="text" value="陈正"></p>
+        <p><span>学号：</span><input type="text" value="41455077"></p>
+        <script>
+            function addItem() {
+                var p = document.createElement("p");
+                p.innerHTML = `<span>${this.value}：</span><input type="text" value="">`;
+                this.before(p);
+                this.value = null;
+            }
+        </script>
+        <input class="noprint" placeholder="在这里输入并添加其它条目" onblur="javascript:this.value && addItem.call(this);">
+        <hr class="noprint">
+    </div>
+    <div id="content" class="page">
+        <script>
+            function rendMarkdown() {
+                this.value = decodeURIComponent(this.value);
+                var w = open(this.value);
+                this.before((function (a) {
+                    a.href = 'javascript:;';
+                    a.addEventListener('click', function () {
+                        var article = w.document.querySelector('#readme > article');
+                        document.querySelector('#cover>h1>input').value = article.querySelector('h1').textContent;
+                        document.querySelector('#cover>h2>input').value = article.querySelector('h2').textContent;
+                        this.before(article);
+                        this.remove();
+                    });
+                    a.text = '当网页读取完毕后点击填入Markdown的内容';
+                    a.title = this.value;
+                    return a;
+                }).call(this, document.createElement('a')));
+                this.value = null;
+            }
+        </script>
+        <input class="noprint" placeholder="https://github.com/[user]/[repo]/blob/master/[path]/[file].md" onblur="javascript:this.value && rendMarkdown.call(this);">
+    </div>
+</body>
+
+</html>
