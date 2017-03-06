@@ -72,11 +72,19 @@
         <p><span>班级：</span><input type="text" value="计算机1403班"></p>
         <p><span>姓名：</span><input type="text" value="陈正"></p>
         <p><span>学号：</span><input type="text" value="41455077"></p>
-        <p><span>日期：</span><input type="text" value="20  年  月  日"></p>
+        <p><span>日期：</span><input id="date" type="text" value=""></p>
         <script>
+            document.querySelector('#cover>p>input#date').setAttribute('value', (function (d) {
+                var year = d[0];
+                var month = d[1];
+                var date = d[2];
+                return year + '年'
+                    + (month.length == 1 ? '0' + month : month) + '月'
+                    + (date.length == 1 ? '0' + date : date) + '日';
+            })(new Date().toLocaleDateString().split('/')));
             function addItem() {
                 var p = document.createElement("p");
-                p.innerHTML = `<span>${this.value}：</span><input type="text" value="">`;
+                p.innerHTML = '<span>' + this.value + '：</span><input type="text" value="">';
                 this.before(p);
                 this.value = null;
             }
@@ -94,18 +102,18 @@
                 var readme = document.createElement('div');
                 readme.setAttribute('id', 'readme');
                 readme.classList.add('readme', 'blob', 'instapaper_body');
-                fetch(this.value).then(r => {
+                fetch(this.value).then(function (r) {
                     this.value = decodeURIComponent(r.url);
-                    return r;
-                }).then(r => Promise.resolve(r.text())).then(function (content) {
-                    readme.innerHTML = `<article class="markdown-body entry-content" itemprop="text">${marked(content)}</article>`;
+                    return Promise.resolve(r.text());
+                }.bind(this)).then(function (content) {
+                    readme.innerHTML =
+                        '<article class="markdown-body entry-content" itemprop="text">' + marked(content) + '</article>';
                     document.querySelector('#cover>h1>input').value = readme.querySelector('h1').textContent;
                     document.querySelector('#cover>h2>input').value = readme.querySelector('h2').textContent;
                     this.setAttribute('readonly', '');
                     this.classList.remove('noprint');
                     this.before(readme);
-                }.bind(this)).catch(e => alert(e));
-                return;
+                }.bind(this)).catch(function (e) { alert(e); });
             }
         </script>
         <input class="noprint" placeholder="https://raw.githubusercontent.com/[user]/[repo]/[branch]/[path]/[file].md" onblur="javascript:this.value && rendMarkdown.call(this);">
