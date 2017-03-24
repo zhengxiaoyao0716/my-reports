@@ -103,6 +103,10 @@
                 readme.setAttribute('id', 'readme');
                 readme.classList.add('readme', 'blob', 'instapaper_body');
                 fetch(this.value).then(function (r) {
+                    document.head.append((base => {
+                        base.href = r.url;
+                        return base;
+                    })(document.createElement('base')))
                     this.value = decodeURIComponent(r.url);
                     return Promise.resolve(r.text());
                 }.bind(this)).then(function (content) {
@@ -116,7 +120,17 @@
                 }.bind(this)).catch(function (e) { alert(e); });
             }
         </script>
-        <input class="noprint" placeholder="https://raw.githubusercontent.com/[user]/[repo]/[branch]/[path]/[file].md" onblur="javascript:this.value && rendMarkdown.call(this);">
+        <input id='contentInput' class="noprint" placeholder="https://raw.githubusercontent.com/[user]/[repo]/[branch]/[path]/[file].md" onblur="javascript:this.value && rendMarkdown.call(this);">
+        <script>
+            {
+                const content = (v => v && v[2])(location.search.substr(1).match('(^|&)content=([^&]*)(&|$)'));
+                if (content) {
+                    const i = document.querySelector('#contentInput');
+                    i.setAttribute('value', content);
+                    i.onblur();
+                }
+            }
+        </script>
     </div>
 
     <!-- scripts -->
