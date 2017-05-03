@@ -75,13 +75,13 @@
         <p><span>日期：</span><input id="date" type="text" value=""></p>
         <script>
             document.querySelector('#cover>p>input#date').setAttribute('value', (function (d) {
-                var year = d[0];
-                var month = d[1];
-                var date = d[2];
+                var year = String(d.getFullYear());
+                var month = String(1 + d.getMonth());
+                var date = String(d.getDate());
                 return year + '年'
                     + (month.length == 1 ? '0' + month : month) + '月'
                     + (date.length == 1 ? '0' + date : date) + '日';
-            })(new Date().toLocaleDateString().split('/')));
+            })(new Date()));
             function addItem() {
                 var p = document.createElement("p");
                 p.innerHTML = '<span>' + this.value + '：</span><input type="text" value="">';
